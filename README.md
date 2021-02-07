@@ -22,3 +22,4 @@ You will need a [NordVPN](https://nordvpn.com) account.
 - `COUNTRY` Defaults to the VPN server closest to you; however this can be manually set to a specific country. For example if you want your traffic to only be served through Canada put "CA"... See https://nordvpn.com/servers/ for list of locations. 
 - `PROTOCOL` Defaults to TCP, you can change it to `UDP`.
 - `SERVER` *Optional*... If set it connects to the server you specify. Example server name format: `ca1191.nordvpn.com`.
+- `GROUP` *Optional*...If set it will connect to a recommended server for you, based on server group (for example: legacy_p2p).
