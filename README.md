@@ -13,7 +13,7 @@ Based off the Jeronslot repo. Creates a docker container running Alpine that use
 # Prerequisite 
 You will need a [NordVPN](https://nordvpn.com) account.
 
-## Environment Variables
+# Environment Variables
 
 - `USERNAME` Username of your account
 - `PASSWORD` Password of your account
@@ -24,3 +24,29 @@ You will need a [NordVPN](https://nordvpn.com) account.
 - `COUNTRY` *Optional*, you can choose your own country by using the two-letter country codes that are supported by NordVPN.
 - `PROTOCOL` *Optional*, default set to `tcp`, you can change it to `udp`.
 - `SERVER` *Optional*, if not set, connects to the recommended server for you. If set, connects to the server you specify. Example server name format: `us2484.nordvpn.com`.
+
+# Example
+```  NordVPN:
+    image: laurencemillward/docker-nordvpn:latest
+    restart: unless-stopped
+    container_name: NordVPN
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    dns:
+      - 103.86.96.100
+      - 103.86.99.100
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - USERNAME=email@gmail.com
+      - PASSWORD=YourP@ssw0rd
+      - LOCAL_NETWORK=172.51.0.1/16
+      - LOAD=80
+      - COUNTRY=ch
+    ports:
+      - 1080:1080
+      - 6881:6881
+      - 6881:6881/udp
+      - 8081:8081   ```
