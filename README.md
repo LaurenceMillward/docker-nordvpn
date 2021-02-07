@@ -1,20 +1,19 @@
-Based off the Jeronslot repo. Creates a docker container running Alpine that uses your NordVPN account. Handy for routing other container traffic through it to act as a proxy. Some minor edits and changes
+Based off the Jeronslot repo. Creates a docker container running Alpine that uses your NordVPN account. Handy for routing other container traffic through it to act as a proxy. Also runs privoxy exposed over port 8118 to allow the use of routing home / mobile internet via the docker-nordvpn container. Some minor edits and changes have been made, for example, upgrading Alpine to latest release. All edits can be seen in GitHub. 
 
 # Features
-- Connects to the recommended server for you! Provided by the API.
-- Reconnects if the load is to high on a NordVPN server (Depends on setup CRON).
-- Reconnects to random servers if specified
-- Healthcheck if the connection is not secure.
-- Privoxy to use it elsewhere, for private browsing!
-- Connect your other containers, so they have a secured connection as well. A cool Docker feature :)
-- It will download the ovpn files daily! So you will stay up-to-date with the latest ovpn files.
-- Connect to the country that you select! The API will find the fastest server.
+- Automatically connects to your closest NordVPN server.
+- If the load is over a defined limit, will automatically re-connect to the next best server. 
+- Healthcheck every minute to ensure the connection is secure. 
+- Privoxy exposed over port 8118. 
+- Connect your other containers to the docker-nordvpn network to secure / hide their traffic.
+- ovpn files update daily to ensure there's no dud servers over time. 
+
 
 # Prerequisite 
 You will need a [NordVPN](https://nordvpn.com) account.
 
-# Environment Variables
 
+# Environment Variables
 - `USERNAME` Username of your NordVPN account
 - `PASSWORD` Password of your NordVPN account
 - `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. 192.168.1.0/24, 10.1.1.0/24). This is needed to respond to your client.

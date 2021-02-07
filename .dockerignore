@@ -3,3 +3,4 @@
 .git
 docker-compose*
 README.md
+.gitattributes
