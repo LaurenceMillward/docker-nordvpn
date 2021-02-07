@@ -1,4 +1,4 @@
-Based off the Jeronslot repo. Creates a docker container running Alpine that uses your NordVPN account. Handy for routing other container traffic through it to act as a proxy. 
+Based off the Jeronslot repo. Creates a docker container running Alpine that uses your NordVPN account. Handy for routing other container traffic through it to act as a proxy. Some minor edits and changes
 
 # Features
 - Connects to the recommended server for you! Provided by the API.
@@ -15,38 +15,11 @@ You will need a [NordVPN](https://nordvpn.com) account.
 
 # Environment Variables
 
-- `USERNAME` Username of your account
-- `PASSWORD` Password of your account
-- `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. 192.168.1.0/24, 10.1.1.0/24). This is needed to response to your client.
-- `CRON` You can set this variable to change the default check of every 15 minutes. This will be used to check if the LOAD is still OK. This can be changed using the CRON syntax.
-- `LOAD` If the load is > 75 on a NordVPN server, OpenVPN will be restarted and connects to the recommended server for you! This check will be done every 15 minutes by CRON.
-- `RANDOM_TOP` *Optional*, if set, it will randomly select from the top "x" number of recommended servers. Valid values are integers between 1 and the number of servers that nord has.
-- `COUNTRY` *Optional*, you can choose your own country by using the two-letter country codes that are supported by NordVPN.
-- `PROTOCOL` *Optional*, default set to `tcp`, you can change it to `udp`.
-- `SERVER` *Optional*, if not set, connects to the recommended server for you. If set, connects to the server you specify. Example server name format: `us2484.nordvpn.com`.
-
-# Example
-```  NordVPN:
-    image: laurencemillward/docker-nordvpn:latest
-    restart: unless-stopped
-    container_name: NordVPN
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun
-    dns:
-      - 103.86.96.100
-      - 103.86.99.100
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - USERNAME=email@gmail.com
-      - PASSWORD=YourP@ssw0rd
-      - LOCAL_NETWORK=172.51.0.1/16
-      - LOAD=80
-      - COUNTRY=ch
-    ports:
-      - 1080:1080
-      - 6881:6881
-      - 6881:6881/udp
-      - 8081:8081   ```
+- `USERNAME` Username of your NordVPN account
+- `PASSWORD` Password of your NordVPN account
+- `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. 192.168.1.0/24, 10.1.1.0/24). This is needed to respond to your client.
+- `CRON` Defaults every 15 minutes; checks the load of the VPN server.  
+- `LOAD` Defaults to 75; if the load is greater than this then the container will connect to a less utilised VPN server.
+- `COUNTRY` Defaults to the VPN server closest to you; however this can be manually set to a specific country. For example if you want your traffic to only be served through Canada put "CA"... See https://nordvpn.com/servers/ for list of locations. 
+- `PROTOCOL` Defaults to TCP, you can change it to `UDP`.
+- `SERVER` *Optional*... If set it connects to the server you specify. Example server name format: `ca1191.nordvpn.com`.
