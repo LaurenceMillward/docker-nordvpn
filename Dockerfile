@@ -1,5 +1,5 @@
-FROM alpine:3.10.1
-LABEL MAINTAINER "Jeroen Slot"
+FROM alpine:3.13.1
+LABEL MAINTAINER "Laurence Millward"
 
 ENV OVPN_FILES="https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip" \
     OVPN_CONFIG_DIR="/app/ovpn/config" \
