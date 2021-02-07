@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e -u -o pipefail
+
+source /app/ovpn/get-ovpn-files.sh
+source /app/ovpn/servers_recommendations.sh
+
+. /app/date.sh --source-only
+
+# Create a tun device see: https://www.kernel.org/doc/Documentation/networking/tuntap.txt
+if [ ! -c /dev/net/tun ]; then
+    echo "$(adddate) INFO: Creating tun interface /dev/net/tun"
+    mkdir -p /dev/net
+    mknod /dev/net/tun c 10 200
+    chmod 600 /dev/net/tun
+fi
+
+echo ########################################################
+echo "$(adddate) INFO: Connection to server: $SERVERNAME"
+echo "$(adddate) INFO: Current load: $LOAD"
+echo "$(adddate) INFO: Info updated at: $UPDATED_AT"
+echo "$(adddate) INFO: Server IP: $IP"
+echo "$(adddate) INFO: Protocol: $PROTOCOL"
+echo ########################################################
+
+cd /app/ovpn/config/ovpn_${PROTOCOL,,}
+
+if [ -n "$SERVER" ]; then
+  set -- "$@" '--config' "${SERVER}.${PROTOCOL,,}.ovpn"
+else
+  echo "$(adddate) ERROR: No OpenVPN config found in `pwd`/${SERVER}.${PROTOCOL,,}.ovpn. Exiting."
+  exit 1
+fi
+if [ -n "$USERNAME" -a -n "$PASSWORD" ]; then
+  echo "$USERNAME" > auth.conf
+  echo "$PASSWORD" >> auth.conf
+  chmod 600 auth.conf
+  set -- "$@" '--auth-user-pass' 'auth.conf'
+else
+  echo "$(adddate) ERROR: No credentials available, please fill in the ENVIRONMENT variables USERNAME and PASSWORD. Exiting"
+  exit 1
+fi
+
+openvpn "$@"
