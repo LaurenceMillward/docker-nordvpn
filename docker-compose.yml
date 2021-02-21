@@ -1,7 +1,9 @@
 version: '3'
 services:
-  vpn:
-    image: jeroenslot/nordvpn-proxy:latest
+  NordVPN:
+    image: laurencemillward/docker-nordvpn:latest
+    restart: unless-stopped
+    container_name: NordVPN
     cap_add:
       - NET_ADMIN
     devices:
@@ -13,14 +15,13 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ovpn-data:/app/ovpn/config
     environment:
-      - USERNAME=<nordvpn_username>
-      - PASSWORD=<nordvpn_password>
-      - LOCAL_NETWORK=192.168.1.0/24
-    networks:
-      - default
+      - USERNAME=<NordVPN username>
+      - PASSWORD=<NordVPN password>
+      - LOCAL_NETWORK=172.51.0.1/16
+      - LOAD=80
+      - COUNTRY=ch
     ports:
       - 8118:8118
-    restart: always
 
 volumes:
   ovpn-data:
