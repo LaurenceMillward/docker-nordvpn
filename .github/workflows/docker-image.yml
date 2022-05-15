@@ -21,7 +21,7 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the docker image
-      run: docker build . --file Dockerfile --tag latest:$(date +%s)
+      run: docker build . --file Dockerfile --tag latest
       
     - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/docker-nordvpn
+      run: docker push ${{secrets.DOCKER_USER}}/docker-nordvpn:latest
