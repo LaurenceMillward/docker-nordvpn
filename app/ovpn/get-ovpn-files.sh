@@ -5,8 +5,8 @@
 echo "$(adddate) INFO: Download and extract ovpn files" 
 
 #Create directory if no volume is done
-mkdir -p /app/ovpn/config
-cd /app/ovpn/config
+mkdir -p ${OVPN_CONFIG_DIR}
+cd ${OVPN_CONFIG_DIR}
 
 #First remove files if exists
 rm -rf ovpn*
