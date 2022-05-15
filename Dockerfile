@@ -30,6 +30,7 @@ RUN \
       ncurses \
       curl \
       unzip \
+      wget \
       && \
     echo "####### Changing permissions #######" && \
       find /app -name run | xargs chmod u+x && \
