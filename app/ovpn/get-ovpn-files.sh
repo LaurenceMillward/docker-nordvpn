@@ -12,7 +12,7 @@ cd ${OVPN_CONFIG_DIR}
 rm -rf ovpn*
 
 #Download the files
-wget https://get-nordvpn-ovpn-file.laurencemillward-uk.workers.dev/
+wget https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip
 
 #Unzip files
 unzip -q ovpn.zip
