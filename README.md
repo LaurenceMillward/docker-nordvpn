@@ -14,8 +14,8 @@ You will need a [NordVPN](https://nordvpn.com) account.
 
 
 # Environment Variables
-- `USERNAME` Username of your NordVPN account
-- `PASSWORD` Password of your NordVPN account
+- `USERNAME` Username of your NordVPN SERVICE account
+- `PASSWORD` Password of your NordVPN SERVICE account
 - `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. 192.168.1.0/24, 10.1.1.0/24). This is needed to respond to your client.
 - `CRON` Defaults every 15 minutes; checks the load of the VPN server.  
 - `LOAD` Defaults to 75; if the load is greater than this then the container will connect to a less utilised VPN server.
