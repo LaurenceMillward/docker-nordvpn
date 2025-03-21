@@ -2,36 +2,52 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Docker Login
+    - name: Check out repository
       uses: actions/checkout@v3
-      
-    - name: Login To DockerHub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+
+    - name: Fetch all tags
+      run: git fetch --tags
+
+    - name: Determine next tag
+      id: tag
+      run: |
+        LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+        if [[ -z "$LATEST_TAG" ]]; then
+          NEXT_TAG=1.0.0
+        else
+          IFS='.' read -r -a parts <<< "$LATEST_TAG"
+          PATCH=$((parts[2] + 1))
+          NEXT_TAG="${parts[0]}.${parts[1]}.$PATCH"
+        fi
+        echo "next_tag=$NEXT_TAG" >> $GITHUB_ENV
+
+    - name: Log in to DockerHub
+      uses: docker/login-action@v2
       with:
-        username: ${{secrets.DOCKER_USER}}
-        password: ${{secrets.DOCKER_PASSWORD}}
-    
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Extract metadata
       id: meta
-      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      uses: docker/metadata-action@v4
       with:
         images: laurencemillward/docker-nordvpn
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      uses: docker/build-push-action@v4
       with:
         context: .
         push: true
-        tags: laurencemillward/docker-nordvpn:latest
+        tags: |
+          laurencemillward/docker-nordvpn:latest
+          laurencemillward/docker-nordvpn:${{ env.next_tag }}
         labels: ${{ steps.meta.outputs.labels }}
