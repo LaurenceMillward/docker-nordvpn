@@ -1,4 +1,4 @@
-FROM alpine:3.16.6
+FROM alpine:3.20.6
 LABEL MAINTAINER "Laurence Millward"
 LABEL AUTHOR "jeroenslot"
 
