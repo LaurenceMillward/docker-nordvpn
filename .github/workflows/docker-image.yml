@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,22 +16,40 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
-
-    - name: Fetch all tags
-      run: git fetch --tags
+      with:
+        fetch-depth: 0
 
     - name: Determine next tag
+      # We keep this ID so we can reference its outputs later
       id: tag
       run: |
-        LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+        # Get the latest tag, sort by version, and strip the 'v' (e.g., v1.1 -> 1.1)
+        LATEST_TAG=$(git tag --sort=-v:refname | head -n 1 | sed 's/^v//')
+        
         if [[ -z "$LATEST_TAG" ]]; then
-          NEXT_TAG=1.0.0
+          NEXT_TAG="v1.0"
         else
+          # Split into an array using '.' as the separator
           IFS='.' read -r -a parts <<< "$LATEST_TAG"
-          PATCH=$((parts[2] + 1))
-          NEXT_TAG="${parts[0]}.${parts[1]}.$PATCH"
+          
+          # Increment the minor version (the second part)
+          MINOR=$((parts[1] + 1))
+          
+          # Reconstruct the tag with the 'v' prefix
+          NEXT_TAG="v${parts[0]}.$MINOR"
         fi
-        echo "next_tag=$NEXT_TAG" >> $GITHUB_ENV
+        
+        # FIX: Write to GITHUB_OUTPUT instead of GITHUB_ENV
+        echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
+
+    - name: Push new tag to GitHub
+      if: github.event_name == 'push' 
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # FIX: Reference the step output
+        git tag ${{ steps.tag.outputs.next_tag }}
+        git push origin ${{ steps.tag.outputs.next_tag }}
 
     - name: Log in to DockerHub
       uses: docker/login-action@v2
@@ -49,5 +70,5 @@ jobs:
         push: true
         tags: |
           laurencemillward/docker-nordvpn:latest
-          laurencemillward/docker-nordvpn:${{ env.next_tag }}
+          laurencemillward/docker-nordvpn:${{ steps.tag.outputs.next_tag }}
         labels: ${{ steps.meta.outputs.labels }}
