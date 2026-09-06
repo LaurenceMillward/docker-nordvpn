@@ -33,8 +33,8 @@ RUN \
       wget \
       dos2unix \
       && \
-    echo "####### Changing permissions #######" && \
-      find /app -type f | xargs dos2unix && \
+    echo "####### Changing permissions and line endings #######" && \
+      find /app -type f | xargs sed -i 's/\r//g' && \
       find /app -name run | xargs chmod u+x && \
       find /app -name *.sh | xargs chmod u+x \
       && \
