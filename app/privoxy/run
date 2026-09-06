@@ -3,12 +3,18 @@
 sleep 10
 
 # Return traffic that went through OpenVPN works.
-gw=$(ip route | awk '/default/ {print $3}')
+gw=$(ip route show default dev eth0 | awk '{print $3}')
+[ -z "$gw" ] && gw=$(ip route | awk '/default/ {print $3}' | head -n 1)
+
 if [ -n "$LOCAL_NETWORK" ]; then
-	ip route add to ${LOCAL_NETWORK} via $gw dev eth0
+	for net in $(echo "$LOCAL_NETWORK" | tr ',' ' '); do
+		echo "$(adddate) INFO: Adding route to $net via $gw dev eth0"
+		ip route add to "$net" via "$gw" dev eth0 || true
+	done
+else
+	ip route add to 192.168.1.0/24 via "$gw" dev eth0 || true
 fi
-ip route add to 192.168.1.0/24 via $gw dev eth0
 
 # Start privoxy
 echo "$(adddate) INFO: Privoxy will be started"
-privoxy --no-daemon
+privoxy --no-daemon

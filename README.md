@@ -16,7 +16,7 @@ You will need a [NordVPN](https://nordvpn.com) account.
 # Environment Variables
 - `USERNAME` Username of your NordVPN SERVICE account
 - `PASSWORD` Password of your NordVPN SERVICE account
-- `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. 192.168.1.0/24, 10.1.1.0/24). This is needed to respond to your client.
+- `LOCAL_NETWORK` - The CIDR mask of the local IP network (e.g. `192.168.178.0/24`, `10.1.1.0/24`). Supports multiple comma- or space-separated subnets (e.g. `192.168.178.0/24,10.0.0.0/8`). This is needed to route return traffic to your client.
 - `CRON` Defaults every 15 minutes; checks the load of the VPN server.  
 - `LOAD` Defaults to 75; if the load is greater than this then the container will connect to a less utilised VPN server.
 - `COUNTRY` Defaults to the VPN server closest to you; however this can be manually set to a specific country. For example if you want your traffic to only be served through Canada put "CA"... See https://nordvpn.com/servers/ for list of locations. 
