@@ -31,8 +31,10 @@ RUN \
       curl \
       unzip \
       wget \
+      dos2unix \
       && \
     echo "####### Changing permissions #######" && \
+      find /app -type f | xargs dos2unix && \
       find /app -name run | xargs chmod u+x && \
       find /app -name *.sh | xargs chmod u+x \
       && \
